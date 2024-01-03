@@ -168,13 +168,14 @@ GO
 
 -------------------------------------------------------------------------------
 ---
---- Compute the (real) roots of a parabola by "completing the square".
+--- Compute the (real) roots of a quadratic polynomial
+--- by "completing the square".
 ---
 --- y(x) = @a * x2 + @b * x + @c
 ---
 -------------------------------------------------------------------------------
 
-CREATE OR ALTER FUNCTION Math.Parabolic_roots(
+CREATE OR ALTER FUNCTION Math.Quadratic_roots(
     @a numeric(38, 18),
     @b numeric(38, 18),
     @c numeric(38, 18))
@@ -199,8 +200,8 @@ RETURN (
 
 GO
 /*
-SELECT x, x*x+x*6+5 AS y FROM Math.Parabolic_roots(1, 6, 5);
-SELECT *, x*x*2+x*7+6 FROM Math.Parabolic_roots(2, 7, 6);
+SELECT x, x*x+x*6+5 AS y FROM Math.Quadratic_roots(1, 6, 5);
+SELECT *, x*x*2+x*7+6 FROM Math.Quadratic_roots(2, 7, 6);
 */
 GO
 
