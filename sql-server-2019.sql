@@ -326,3 +326,21 @@ BEGIN;
 END;
 
 GO
+
+-------------------------------------------------------------------------------
+---
+--- Computes the nth root of a number using logarithms
+---
+-------------------------------------------------------------------------------
+
+CREATE OR ALTER FUNCTION Math.nth_Root(@number numeric(38, 8), @n smallint)
+RETURNS numeric(38, 18)
+AS
+
+BEGIN;
+
+    RETURN POWER(10., (1./@n)*LOG10(@number));
+
+END;
+
+GO
