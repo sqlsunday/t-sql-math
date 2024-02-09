@@ -259,3 +259,29 @@ SELECT Math.nCk(8, 5)
 SELECT (8.*7*6*5*4)/(5.*4*3*2*1),
        (8.*7*6*5*4)/(5.*4*3*2*1)
 */
+GO
+
+-------------------------------------------------------------------------------
+---
+--- Computes POWER(@base, @exp)%@mod for large numbers
+---
+--- Adapted from: https://en.wikipedia.org/wiki/Modular_exponentiation#Right-to-left_binary_method
+---
+-------------------------------------------------------------------------------
+
+CREATE OR ALTER FUNCTION Math.Modular_Exponentiation(@base numeric(38, 0), @exp bigint, @mod bigint)
+RETURNS bigint
+AS
+
+BEGIN;
+    DECLARE @res bigint=1;
+    WHILE (@exp>0) BEGIN;
+        IF (@exp%2=1) SET @res=(@res*@base)%@mod;
+        SET @exp=RIGHT_SHIFT(@exp, 1);
+        SET @base=POWER(@base, 2)%@mod;
+
+    END;
+    RETURN @res;
+END;
+
+GO
