@@ -315,13 +315,21 @@ RETURNS bigint
 AS
 
 BEGIN;
-    DECLARE @res bigint=1;
-    WHILE (@exp>0) BEGIN;
-        IF (@exp%2=1) SET @res=(@res*@base)%@mod;
-        SET @exp=RIGHT_SHIFT(@exp, 1);
-        SET @base=POWER(@base, 2)%@mod;
+    DECLARE @res bigint;
 
-    END;
+    WITH iteration AS (
+        SELECT CAST(@base%@mod AS numeric(38, 0)) AS b, @exp AS e, CAST(1 AS bigint) AS res
+        UNION ALL
+        SELECT CAST(b*b%@mod AS numeric(38, 0)),
+               e/2 AS e,
+               CAST((CASE WHEN e%2=1 THEN (res*b)%@mod ELSE res END) AS bigint) AS res
+        FROM iteration
+        WHERE e>0)
+
+    SELECT @res=res
+    FROM iteration
+    WHERE e=0;
+
     RETURN @res;
 END;
 
