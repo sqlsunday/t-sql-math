@@ -352,3 +352,43 @@ BEGIN;
 END;
 
 GO
+
+-------------------------------------------------------------------------------
+---
+--- Computes the modular multiplicative inverse,
+--- https://en.wikipedia.org/wiki/Modular_multiplicative_inverse
+---
+--- Adapted from
+--- https://en.wikipedia.org/wiki/Extended_Euclidean_algorithm#Pseudocode
+---
+-------------------------------------------------------------------------------
+
+CREATE OR ALTER FUNCTION Math.Modular_multiplicative_inverse(@a bigint, @b bigint)
+RETURNS bigint
+AS
+
+BEGIN;
+    DECLARE @result bigint;
+
+    WITH recursive_cte AS (
+        SELECT CAST(0 AS bigint) AS t, CAST(1 AS bigint) AS new_t, @b AS r, @a AS new_r
+
+        UNION ALL
+
+        SELECT new_t AS t, t-quotient*new_t AS new_t,
+               new_r AS r, r-quotient*new_r AS new_r
+        FROM (
+            SELECT t, new_t,
+                   r, new_r,
+                   CAST(r/new_r AS bigint) AS quotient
+            FROM recursive_cte
+            WHERE new_r!=0) AS sub)
+        
+    SELECT @result=(CASE WHEN t<0 THEN t+@b ELSE t END)
+    FROM recursive_cte
+    WHERE new_r=0;
+
+    RETURN @result;
+END;
+
+GO
