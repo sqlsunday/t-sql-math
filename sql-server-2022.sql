@@ -24,7 +24,7 @@ RETURN (
     --- ... except numbers that are evenly divisible by a number between a and sqrt(a).
     OUTER APPLY (
         SELECT TOP (1) 0 AS x
-        FROM GENERATE_SERIES(CAST(3 AS bigint), CAST(CEILING(SQRT(a.[value])) AS bigint), CAST(1 AS bigint)) AS b
+        FROM GENERATE_SERIES(CAST(3 AS bigint), CAST(CEILING(SQRT(a.[value])) AS bigint), CAST(2 AS bigint)) AS b
         WHERE a.[value]%b.[value]=0
         ) AS x
     WHERE x.x IS NULL
